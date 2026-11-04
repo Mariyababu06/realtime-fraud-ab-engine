@@ -1,0 +1,6 @@
+confluent-kafka>=2.4
+clickhouse-connect>=0.8
+pandas>=2.0
+numpy>=1.26
+pyarrow>=14.0
+pyyaml>=6.0

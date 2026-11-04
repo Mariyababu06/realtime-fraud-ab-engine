@@ -1,0 +1,18 @@
+# secrets and local config
+.env
+*.pem
+*.key
+
+# data (the 24M-row PaySim CSV goes in data/ locally and is never committed)
+data/*
+!data/.gitkeep
+
+# logs, caches, builds
+logs/*
+!logs/.gitkeep
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.venv/
+.streamlit/secrets.toml

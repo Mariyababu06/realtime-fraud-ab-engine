@@ -1,0 +1,20 @@
+<!-- Mounted into /etc/clickhouse-server/users.d/. Defines settings profiles and quotas; users, roles, grants and quotas live in
+     database/security/03_rbac_setup.sql (SQL-created users cannot use XML quotas). Single-node dev setup: for a cluster add <remote_servers> in config.d. -->
+<clickhouse>
+    <profiles>
+        <!-- Analysts: read-only (2 = may tune session settings but not write), bounded cost per query so nobody can scan/exhaust the server -->
+        <analyst_profile>
+            <readonly>2</readonly>
+            <max_execution_time>30</max_execution_time>
+            <max_memory_usage>2000000000</max_memory_usage>
+            <max_rows_to_read>100000000</max_rows_to_read>
+            <max_result_rows>100000</max_result_rows>
+            <result_overflow_mode>break</result_overflow_mode>
+        </analyst_profile>
+        <!-- Pipeline service account: insert/select only, larger batches allowed -->
+        <pipeline_profile>
+            <max_execution_time>60</max_execution_time>
+            <max_insert_block_size>1048576</max_insert_block_size>
+        </pipeline_profile>
+    </profiles>
+</clickhouse>

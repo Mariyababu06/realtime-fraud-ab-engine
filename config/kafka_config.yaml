@@ -1,0 +1,25 @@
+# Topic layout and client tuning. Partition count = max consumer parallelism.
+topics:
+  - name: transactions.raw
+    partitions: 6              # keyed by origin account, so a user's events stay ordered
+    replication_factor: 1      # dev: 1 broker. Production: 3
+    config:
+      retention.ms: 604800000  # 7 days
+      compression.type: lz4
+      min.insync.replicas: 1   # production: 2
+  - name: transactions.dlq
+    partitions: 1
+    replication_factor: 1
+    config:
+      retention.ms: 2592000000 # 30 days, to investigate bad events
+
+producer:
+  acks: all
+  enable.idempotence: true
+  compression.type: lz4
+  linger.ms: 20
+
+consumer:
+  group.id: fraud-scorer
+  enable.auto.commit: false    # offsets are committed manually after the ClickHouse insert
+  auto.offset.reset: earliest

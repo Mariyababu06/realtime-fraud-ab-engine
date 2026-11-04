@@ -1,0 +1,6 @@
+-r requirements.txt
+-r dashboard/requirements.txt
+pytest>=8.0
+ruff>=0.5
+chdb>=3.0        # embedded ClickHouse: runs the real SQL files in tests/test_sql_integration.py
+pip-audit>=2.7
