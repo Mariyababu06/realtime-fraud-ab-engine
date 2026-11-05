@@ -110,13 +110,6 @@ Python logic; dashboard loads in demo mode; configs parse. **Not executed here:*
 role/permission enforcement (no Docker in the build environment). Run `make up` and `make produce` once and fix any local
 environment differences before presenting it. ClickHouse 24.8 is pinned for `SQL SECURITY DEFINER` views.
 
-## Resume bullets (replace numbers with your real-PaySim run)
-
-- Built a real-time fraud A/B engine (Kafka, ClickHouse, Python, Streamlit) with a sticky hash-based 50/50 user split and sample-ratio check.
-- Compared a behavioural rule against a static-threshold baseline: detection rate 38% to 92% and false positives down 5x (demo data), with significance testing (z-test, 95% CI).
-- Secured analyst access with a salted SHA-256 masked view, least-privilege ClickHouse roles, query quotas, PII-redacted JSON logging.
-- Shipped 21 automated tests and a GitHub Actions pipeline (lint, tests, dependency audit, Docker build and publish).
-
 
 ## Analysis and hardening additions
 
