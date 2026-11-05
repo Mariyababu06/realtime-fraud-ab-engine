@@ -124,6 +124,6 @@ environment differences before presenting it. ClickHouse 24.8 is pinned for `SQL
 - `docs/DATA_DICTIONARY.md`, `docs/FINDINGS.md`, `data/README.md`: data and reproducibility documentation.
 - `docs/PRODUCTION_READINESS.md`: production deployment gates and known limitations.
 - `pipeline.ab_stats.cluster_bootstrap_rate_difference`: exploratory user-cluster bootstrap for fraud recall; do not use transaction-level p-values as final inference.
-- Logging redaction now covers formatted messages, nested context and exception text. HMAC-SHA256 pseudonyms are configured in Python and the ClickHouse view; verify your ClickHouse version supports `hmac_sha256` before deploying.
+- Logging redaction now covers formatted messages, nested context and exception text. HMAC-SHA256 pseudonyms are configured in Python and the ClickHouse view; ClickHouse has no HMAC function, so the view rebuilds HMAC-SHA256 from SHA256 and two key pads (see `pipeline/hashing.py`).
 
 **Important:** this is still not production-certified. The destination velocity feature is in-memory and not safe for horizontal scaling/restarts; the current DLQ contains raw payloads with account identifiers. See `docs/PRODUCTION_READINESS.md` and do not connect it to real payment traffic until those blockers are resolved.

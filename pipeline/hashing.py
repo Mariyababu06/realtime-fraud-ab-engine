@@ -19,3 +19,15 @@ def mask_id(value: str, salt: str) -> str:
     if not salt or salt == "dev-only-salt-change-me":
         raise ValueError("A non-default PII_SALT is required for pseudonymisation")
     return hmac.new(salt.encode(), str(value).encode(), hashlib.sha256).hexdigest().upper()
+
+
+def hmac_pads_hex(salt: str) -> tuple[str, str]:
+    """Hex of the HMAC inner/outer key pads. ClickHouse has no HMAC function, so the masked view rebuilds
+    HMAC-SHA256 as SHA256(opad || SHA256(ipad || value)) with these two constants (identical output to mask_id)."""
+    if not salt or salt == "dev-only-salt-change-me":
+        raise ValueError("A non-default PII_SALT is required for pseudonymisation")
+    key = salt.encode()
+    if len(key) > 64:
+        key = hashlib.sha256(key).digest()
+    key = key.ljust(64, b"\x00")
+    return bytes(b ^ 0x36 for b in key).hex(), bytes(b ^ 0x5C for b in key).hex()

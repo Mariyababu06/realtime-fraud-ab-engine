@@ -9,17 +9,23 @@ from pathlib import Path
 
 import clickhouse_connect
 
+from pipeline.hashing import hmac_pads_hex
 from pipeline.logging_config import get_logger
 
 log = get_logger("init_db")
 ROOT = Path(__file__).resolve().parents[1]
 FILES = ["database/schemas/01_table_transactions.sql", "database/schemas/02_view_pii_masking.sql",
          "database/security/03_rbac_setup.sql"]
-PLACEHOLDERS = {"__PII_SALT__": "PII_SALT", "__PIPELINE_PASSWORD__": "CLICKHOUSE_PIPELINE_PASSWORD",
+PLACEHOLDERS = {"__PIPELINE_PASSWORD__": "CLICKHOUSE_PIPELINE_PASSWORD",
                 "__ANALYST_PASSWORD__": "CLICKHOUSE_ANALYST_PASSWORD"}
 
 
 def render(sql: str) -> str:
+    if "__HMAC_" in sql:
+        if "change-me" in os.getenv("PII_SALT", ""):
+            sys.exit("PII_SALT must be set to a real secret (see .env.example)")
+        ipad, opad = hmac_pads_hex(os.getenv("PII_SALT", ""))
+        sql = sql.replace("__HMAC_IPAD_HEX__", ipad).replace("__HMAC_OPAD_HEX__", opad)
     for token, env in PLACEHOLDERS.items():
         if token in sql:
             value = os.getenv(env)

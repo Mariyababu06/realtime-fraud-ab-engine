@@ -12,7 +12,7 @@ chdb = pytest.importorskip("chdb")
 from chdb import session as chdb_session  # noqa: E402
 
 from pipeline.consumer_processor import COLUMNS, to_row  # noqa: E402
-from pipeline.hashing import mask_id  # noqa: E402
+from pipeline.hashing import hmac_pads_hex, mask_id  # noqa: E402
 from pipeline.producer import iter_events  # noqa: E402
 from pipeline.scoring import Scorer  # noqa: E402
 from scripts.generate_sample_data import generate  # noqa: E402
@@ -22,7 +22,8 @@ SALT = "test-salt"
 
 
 def _sql(rel: str) -> str:
-    text = (ROOT / rel).read_text(encoding="utf-8").replace("__PII_SALT__", SALT)
+    ipad, opad = hmac_pads_hex(SALT)
+    text = (ROOT / rel).read_text(encoding="utf-8").replace("__HMAC_IPAD_HEX__", ipad).replace("__HMAC_OPAD_HEX__", opad)
     return "\n".join(ln for ln in text.splitlines() if not ln.strip().startswith("--"))
 
 

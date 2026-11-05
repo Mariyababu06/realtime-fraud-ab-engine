@@ -1,4 +1,3 @@
-"""Reusable dashboard widgets: KPI cards, A/B table, significance panel, latency SLA, trend, alerts."""
 import plotly.express as px
 import streamlit as st
 

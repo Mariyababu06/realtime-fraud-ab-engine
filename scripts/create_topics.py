@@ -1,4 +1,4 @@
-"""Creates Kafka topics from config/kafka_config.yaml (single source of truth). Idempotent."""
+
 import time
 
 from confluent_kafka.admin import AdminClient, NewTopic
