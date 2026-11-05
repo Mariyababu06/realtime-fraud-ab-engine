@@ -34,8 +34,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Create .env from the example
+        run: cp .env.example .env
       - name: Validate compose file
-        run: docker compose --env-file .env.example -f docker/docker-compose.yml config -q
+        run: docker compose --env-file .env -f docker/docker-compose.yml config -q
       - name: Build image
         run: docker build -f docker/Dockerfile -t fraud-ab-engine:ci .
 
